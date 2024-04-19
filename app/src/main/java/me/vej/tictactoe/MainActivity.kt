@@ -1,7 +1,6 @@
 package me.vej.tictactoe
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
@@ -18,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,13 +38,14 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+// For some reason the values list doesn't clear properly so we use this in conjunction
 var ticTacToeCurrentState = Array(9) { "" }
 var currentPlayer = 0
 var isGameRunning = true
 var winner = -2
 var player1Name = "Player 1"
 var player2Name = "Player 2"
-var allowedToClick = true;
+var allowedToClick = true
 
 @Composable
 fun TicTacToe() {
@@ -55,8 +54,8 @@ fun TicTacToe() {
         repeat(9) {
             values.add("")
         }
-        var dialogOpened = remember { mutableStateOf(false) }
-        var changeNamesDialogOpened = remember { mutableStateOf(false) }
+        val dialogOpened = remember { mutableStateOf(false) }
+        val changeNamesDialogOpened = remember { mutableStateOf(false) }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Card(colors = CardDefaults.cardColors(containerColor = Color(180,180,255)), modifier = Modifier.padding(10.dp)) {
                 Column(modifier = Modifier.aspectRatio(1f)) {
@@ -66,9 +65,9 @@ fun TicTacToe() {
                         .fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center)
                     {
-                        TicTacToeButton(values[0], onValueChange = { newCount, id -> values[id] = newCount },1, 1, onDialogChange = {newDialogState -> dialogOpened.value = newDialogState}, values)
-                        TicTacToeButton(values[1], onValueChange = { newCount, id -> values[id] = newCount },1, 2, onDialogChange = {newDialogState -> dialogOpened.value = newDialogState}, values)
-                        TicTacToeButton(values[2], onValueChange = { newCount, id -> values[id] = newCount },1, 3, onDialogChange = {newDialogState -> dialogOpened.value = newDialogState}, values)
+                        TicTacToeButton(values[0], onValueChange = { newCount, id -> values[id] = newCount },1, 1, onDialogChange = {newDialogState -> dialogOpened.value = newDialogState})
+                        TicTacToeButton(values[1], onValueChange = { newCount, id -> values[id] = newCount },1, 2, onDialogChange = {newDialogState -> dialogOpened.value = newDialogState})
+                        TicTacToeButton(values[2], onValueChange = { newCount, id -> values[id] = newCount },1, 3, onDialogChange = {newDialogState -> dialogOpened.value = newDialogState})
                     }
                     Row(modifier = Modifier
                         .weight(1f)
@@ -76,9 +75,9 @@ fun TicTacToe() {
                         .fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center)
                     {
-                        TicTacToeButton(values[3], onValueChange = { newCount, id -> values[id] = newCount },2, 1, onDialogChange = {newDialogState -> dialogOpened.value = newDialogState}, values)
-                        TicTacToeButton(values[4], onValueChange = { newCount, id -> values[id] = newCount },2, 2, onDialogChange = {newDialogState -> dialogOpened.value = newDialogState}, values)
-                        TicTacToeButton(values[5], onValueChange = { newCount, id -> values[id] = newCount },2, 3, onDialogChange = {newDialogState -> dialogOpened.value = newDialogState}, values)
+                        TicTacToeButton(values[3], onValueChange = { newCount, id -> values[id] = newCount },2, 1, onDialogChange = {newDialogState -> dialogOpened.value = newDialogState})
+                        TicTacToeButton(values[4], onValueChange = { newCount, id -> values[id] = newCount },2, 2, onDialogChange = {newDialogState -> dialogOpened.value = newDialogState})
+                        TicTacToeButton(values[5], onValueChange = { newCount, id -> values[id] = newCount },2, 3, onDialogChange = {newDialogState -> dialogOpened.value = newDialogState})
                     }
                     Row(modifier = Modifier
                         .weight(1f)
@@ -86,9 +85,9 @@ fun TicTacToe() {
                         .fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center)
                     {
-                        TicTacToeButton(values[6], onValueChange = { newCount, id -> values[id] = newCount },3, 1, onDialogChange = {newDialogState -> dialogOpened.value = newDialogState}, values)
-                        TicTacToeButton(values[7], onValueChange = { newCount, id -> values[id] = newCount },3, 2, onDialogChange = {newDialogState -> dialogOpened.value = newDialogState}, values)
-                        TicTacToeButton(values[8], onValueChange = { newCount, id -> values[id] = newCount },3, 3, onDialogChange = {newDialogState -> dialogOpened.value = newDialogState}, values)
+                        TicTacToeButton(values[6], onValueChange = { newCount, id -> values[id] = newCount },3, 1, onDialogChange = {newDialogState -> dialogOpened.value = newDialogState})
+                        TicTacToeButton(values[7], onValueChange = { newCount, id -> values[id] = newCount },3, 2, onDialogChange = {newDialogState -> dialogOpened.value = newDialogState})
+                        TicTacToeButton(values[8], onValueChange = { newCount, id -> values[id] = newCount },3, 3, onDialogChange = {newDialogState -> dialogOpened.value = newDialogState})
                     }
                 }
             }
@@ -107,10 +106,7 @@ fun TicTacToe() {
                     .padding(8.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
                 onClick = {
-                    isGameRunning = true
-                    allowedToClick = true
-                    currentPlayer = 0
-                    ticTacToeCurrentState = Array(9) { "" }
+                    reset()
                     values.clear()
                     repeat(9) {
                         values.add("")
@@ -126,20 +122,21 @@ fun TicTacToe() {
                     Text(text = "TicTacToe")
                 },
                 text = {
-                    if (winner == 0) {
-                        Text(text = "$player1Name has won the game!")
-                    } else if (winner == 1) {
-                        Text(text = "$player2Name has won the game!")
-                    } else {
-                        Text(text = "Draw!")
+                    when (winner) {
+                        0 -> {
+                            Text(text = "$player1Name has won the game!")
+                        }
+                        1 -> {
+                            Text(text = "$player2Name has won the game!")
+                        }
+                        else -> {
+                            Text(text = "Draw!")
+                        }
                     }
                 },
                 onDismissRequest = {
                     dialogOpened.value = false
-                    allowedToClick = true
-                    currentPlayer = 0;
-                    isGameRunning = true;
-                    ticTacToeCurrentState = Array(9) { "" }
+                    reset()
                     values.clear()
                     repeat(9) {
                         values.add("")
@@ -148,11 +145,8 @@ fun TicTacToe() {
                 confirmButton = {
                     Button(
                         onClick = {
-                            dialogOpened.value = false;
-                            allowedToClick = true
-                            currentPlayer = 0
-                            isGameRunning = true;
-                            ticTacToeCurrentState = Array(9) { "" }
+                            dialogOpened.value = false
+                            reset()
                             values.clear()
                             repeat(9) {
                                 values.add("")
@@ -172,7 +166,7 @@ fun TicTacToe() {
                     Text(text = "TicTacToe")
                 },
                 text = {
-                    Column() {
+                    Column {
                         Text(text = "Change player names. If player 2 has the name \"Console\" you will be playing against the computer.", modifier = Modifier.padding(12.dp))
                         OutlinedTextField(
                             value = text1.value,
@@ -189,13 +183,13 @@ fun TicTacToe() {
                     }
                 },
                 onDismissRequest = {
-                    changeNamesDialogOpened.value = false;
+                    changeNamesDialogOpened.value = false
                 },
                 confirmButton = {
-                    Row() {
+                    Row {
                         Button(
                             onClick = {
-                                changeNamesDialogOpened.value = false;
+                                changeNamesDialogOpened.value = false
                             },
                             modifier = Modifier.padding(5.dp)
                         ) {
@@ -203,13 +197,10 @@ fun TicTacToe() {
                         }
                         Button(
                             onClick = {
-                                changeNamesDialogOpened.value = false;
+                                changeNamesDialogOpened.value = false
                                 if(text1.value != "") player1Name = text1.value
                                 if(text2.value != "") player2Name = text2.value
-                                allowedToClick = true
-                                currentPlayer = 0
-                                isGameRunning = true
-                                ticTacToeCurrentState = Array(9) { "" }
+                                reset()
                                 values.clear()
                                 repeat(9) {
                                     values.add("")
@@ -226,14 +217,19 @@ fun TicTacToe() {
     }
 }
 
+fun reset() {
+    allowedToClick = true
+    currentPlayer = 0
+    isGameRunning = true
+    ticTacToeCurrentState = Array(9) { "" }
+}
 @Composable
 fun RowScope.TicTacToeButton(
     value: String,
     onValueChange: (String, Int) -> Unit,
     row: Int,
     column: Int,
-    onDialogChange: (Boolean) -> Unit,
-    values: SnapshotStateList<String>
+    onDialogChange: (Boolean) -> Unit
 ) {
     Button(
         modifier = Modifier
@@ -260,10 +256,8 @@ fun RowScope.TicTacToeButton(
                             var j = 0
                             for (i in (0..ticTacToeCurrentState.size)) {
                                 if (ticTacToeCurrentState[i] == "") {
-                                    j++;
+                                    j++
                                     if (j == selectedFirstEmpty) {
-                                        val p = ticTacToeCurrentState.joinToString()
-                                        val q = values.joinToString()
                                         onValueChange(if (currentPlayer == 0) "O" else "X", i)
                                         ticTacToeCurrentState[i] = if (currentPlayer == 0) "O" else "X"
                                         currentPlayer = (currentPlayer + 1) % 2
@@ -272,7 +266,7 @@ fun RowScope.TicTacToeButton(
                                             isGameRunning = false
                                             onDialogChange(true)
                                         }
-                                        break;
+                                        break
                                     }
                                 }
                             }
@@ -309,7 +303,7 @@ fun checkWinner(): Int {
         ticTacToeCurrentState[4] == ticTacToeCurrentState[6] &&
         ticTacToeCurrentState[2] != "")
         return if (ticTacToeCurrentState[2] == "O") 0 else 1
-    if (!ticTacToeCurrentState.contains("")) return -1;
+    if (!ticTacToeCurrentState.contains("")) return -1
 
     return -2
 }
