@@ -1,5 +1,5 @@
-### Tic tac toe game
-To play with computer enter the name "Console" as the player 2 name
+### Tic Tac Toe game in Kotlin
+To play with the computer enter the name "Console" as the "player 2" name
 
 Resources Used:
 - https://developer.android.com/develop/ui/compose/components/dialog
@@ -10,7 +10,7 @@ Resources Used:
 - https://developer.android.com/develop/ui/compose/text/style-text
 - https://developer.android.com/develop/ui/compose/text/configure-layout
 
-MI (ChatGPT) queries:
+LLM (ChatGPT) queries:
 - create 3 equal boxes that take up the whole screen centered in a row in jetpack compose
 - match height to width in jetpack compose
 - how to change a text in a different container in jetpack compose
