@@ -1,4 +1,4 @@
-### Tic Tac Toe game in Kotlin
+### Tic-tac-toe game in Kotlin
 To play with the computer enter the name "Console" as the "player 2" name
 
 Resources Used:
